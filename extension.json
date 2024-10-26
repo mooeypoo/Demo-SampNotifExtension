@@ -1,0 +1,15 @@
+{
+	"name": "SampNotifExtension",
+	"author": "Moriel Schottlender",
+	"description": "A sample extension defining notifications in the aspirational format for KR5.2 work.",
+	"version": "1",
+	"license-name": "GPL-2.0-or-later",
+	"type": "other",
+	"manifest_version": 2,
+    "requires": {
+		"MediaWiki": ">= 1.42.0",
+		"extensions": {
+			"Echo": "*"
+		}
+	}
+}

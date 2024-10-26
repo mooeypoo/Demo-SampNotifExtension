@@ -1,0 +1,60 @@
+{
+    "manifest_version": 1,
+    "notifcation_types": {
+        "welcome": {
+            "context": "message",
+            "priority": "low",
+            "user-locators": [ "event-agent" ],
+            "icon": "site"
+        },
+        "thank-you-edit": {
+            "context": "alert",
+            "priority": "high",
+            "user-locators": [ "event-agent" ],
+            "bundle": {
+                "bundle-id": {
+                    "type": "string",
+                    "value": "thank-you-edit"
+                }, 
+                "default": {
+                    "bundled": true,
+                    "interval": 60
+                },
+                "email": {
+                    "interval": 120
+                }
+            }
+        },
+        "page-linked": {
+            "context": "message",
+            "priority": "medium",
+            "user-locators": [ "article-creator" ],
+            "bundle": {
+                "bundle-id": {
+                    "type": "callback",
+                    "value": "SamplNotifExtension/Bundler::getPageLinkedBundleId"
+                }, 
+                "default": {
+                    "bundled": true,
+                    "interval": 60
+                }
+            }
+        },
+        "mention": {
+            "context": "alert",
+            "priority": "high",
+            "icon": "mention",
+            "user-locators": [ [ "event-extra", "mentions" ] ],
+            "bundle": {
+                "bundle-id": {
+                    "type": "callback",
+                    "value": "SamplNotifExtension/Bundler::getMentionBundleId"
+                }, 
+                "default": {
+                    "bundled": true,
+                    "interval": 60
+                }
+            }
+        }
+    }
+}
