@@ -11,5 +11,10 @@
 		"extensions": {
 			"Echo": "*"
 		}
+	},
+	"Hooks": {
+		"PageSaveComplete": "MediaWiki\\Extensions\\SampNotifExtension\\Triggers::onPageSaveComplete",
+		"LocalUserCreated": "MediaWiki\\Extensions\\SampNotifExtension\\Triggers::onLocalUserCreated",
+		"LinksUpdateComplete": "MediaWiki\\Extensions\\SampNotifExtension\\Triggers::onLinksUpdateComplete"
 	}
 }

@@ -1,27 +1,47 @@
 {
     "manifest_version": 1,
-    "notifcation_types": {
+    "notifications": {
         "welcome": {
             "context": "message",
             "priority": "low",
             "user-locators": [ "event-agent" ],
-            "icon": "site"
+            "icon": "site",
+            "presentation": {
+                "title": {
+                    "msg": "notification-header-welcome",
+                    "params": ["site-name", "event-agent"]
+                },
+                "links": [
+                    {
+                        "msg": "notification-welcome-linktext",
+                        "link": ""
+                    }
+                ]
+            }
         },
         "thank-you-edit": {
             "context": "alert",
             "priority": "high",
             "user-locators": [ "event-agent" ],
+            "icon": "edit",
             "bundle": {
-                "bundle-id": {
-                    "type": "string",
-                    "value": "thank-you-edit"
-                }, 
+                "bundle-id": "thank-you-edit",
                 "default": {
                     "bundled": true,
                     "interval": 60
                 },
                 "email": {
                     "interval": 120
+                }
+            },
+            "presentation": {
+                "title": {
+                    "msg": "echo-category-title-thank-you-edit",
+                    "params": [ [ "event-extra", "editCount" ] ]
+                },
+                "tooltip": {
+                    "msg": "echo-pref-tooltip-thank-you-edit",
+                    "params": []
                 }
             }
         },
@@ -30,26 +50,6 @@
             "priority": "medium",
             "user-locators": [ "article-creator" ],
             "bundle": {
-                "bundle-id": {
-                    "type": "callback",
-                    "value": "SamplNotifExtension/Bundler::getPageLinkedBundleId"
-                }, 
-                "default": {
-                    "bundled": true,
-                    "interval": 60
-                }
-            }
-        },
-        "mention": {
-            "context": "alert",
-            "priority": "high",
-            "icon": "mention",
-            "user-locators": [ [ "event-extra", "mentions" ] ],
-            "bundle": {
-                "bundle-id": {
-                    "type": "callback",
-                    "value": "SamplNotifExtension/Bundler::getMentionBundleId"
-                }, 
                 "default": {
                     "bundled": true,
                     "interval": 60
