@@ -49,19 +49,17 @@ class Hooks implements
 
 					// This used to be in the presentation model, but it should be
 					// used to know how to create the requested notification:
-					if ( !$this->event->getTitle() ) {
-						return false;
+					if ($title) {
+						if ( $this->event->getExtraParam( 'revid' ) ) {
+							$params = [
+								'oldid' => 'prev',
+								'diff' => $revisionRecord->getId()
+							];
+						} else {
+							$params = [];
+						}
+						$url = $title->getLocalURL( $params );
 					}
-			
-					if ( $this->event->getExtraParam( 'revid' ) ) {
-						$params = [
-							'oldid' => 'prev',
-							'diff' => $this->event->getExtraParam( 'revid' )
-						];
-					} else {
-						$params = [];
-					}
-					$url = $this->event->getTitle()->getLocalURL( $params );
 			
 					Notification::create( [
 						'type' => 'thank-you-edit',
