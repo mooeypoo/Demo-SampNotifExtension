@@ -61,16 +61,19 @@ class Hooks implements
 						$url = $title->getLocalURL( $params );
 					}
 			
-					Notification::create( [
-						'type' => 'thank-you-edit',
-						'title' => $title,
-						'agent' => $userIdentity,
-						// Edit threshold notifications are sent to the agent
-						'extra' => [
+					Notification::create(
+						'thank-you-edit', // Event type name
+						$title, // Page title
+						$userIdentity, // Agent
+						// 'extra':
+						[
 							'editCount' => $thresholdCount,
 							'revid' => $revisionRecord->getId(),
 						],
-						'presentation' => [
+						// 'presentation': 
+						// this overrides or augments event definition; 
+						// should it remain a key-value object or should we parameterize that somewhat too?
+						[
 							// Overriding (or augmenting) the default definition so we can give the correct
 							// i18n key
 							'body' => [
@@ -84,7 +87,31 @@ class Hooks implements
 								]
 							]
 						]
-					] );
+					)
+					// Notification::create( [
+					// 	'type' => 'thank-you-edit',
+					// 	'title' => $title,
+					// 	'agent' => $userIdentity,
+					// 	// Edit threshold notifications are sent to the agent
+					// 	'extra' => [
+					// 		'editCount' => $thresholdCount,
+					// 		'revid' => $revisionRecord->getId(),
+					// 	],
+					// 	'presentation' => [
+					// 		// Overriding (or augmenting) the default definition so we can give the correct
+					// 		// i18n key
+					// 		'body' => [
+					// 			'msg' => 'notification-header-thank-you-' + $thresholdCount + '-edit',
+					// 			'params' => [ $userIdentity ]
+					// 		],
+					// 		'links' => [
+					// 			[
+					// 				'url' => $url,
+					// 				'label' => $this->msg( 'notification-link-thank-you-edit', $this->getViewingUserForGender() )->text()
+					// 			]
+					// 		]
+					// 	]
+					// ] );
 				} );
 			}
 		}
@@ -106,16 +133,28 @@ class Hooks implements
 					'label' => $this->msg( 'notification-welcome-linktext' )->text(),
 				];
 			}
-
-			Notification::create( [
-				'type' => 'welcome',
-				'agent' => $user,
-				'presentation' => [
+			Notification::create(
+				'welcome',
+				null, // Page title
+				$user, // Agent
+				// "extra"
+				[],
+				// Presentation:
+				[
 					'links' => [
 						$primaryLink
 					]
 				]
-			] );
+			)
+			// Notification::create( [
+			// 	'type' => 'welcome',
+			// 	'agent' => $user,
+			// 	'presentation' => [
+			// 		'links' => [
+			// 			$primaryLink
+			// 		]
+			// 	]
+			// ] );
 		}
 	}
 
@@ -167,22 +206,48 @@ class Hooks implements
 					$bundleString .= '-' . $event->getTitle()->getNamespace()
 						. '-' . $event->getTitle()->getDBkey();
 				}
-
-				Notification::create( [
-					'type' => 'page-linked',
-					'title' => $title,
-					'agent' => $user,
-					'extra' => [
+				Notification::create(
+					'page-linked',
+					$title,
+					$user,
+					// "extra"
+					[
 						'target-page' => $linkFromPageId,
 						'link-from-page-id' => $linkFromPageId,
 						'revid' => $revid,
 					],
-					// Bundle-id is created here, since there are rules
-					// on how to bundle notifications of this type based
-					// on the page title, rather than all notifications
-					// of this type generally
-					"bundle-id" => $bundleString
-				] );
+					// Presentation:
+					// (Should bundle-id be in presentation, since it kinda relates to it,
+					// and technically is given in the event definition and can be overridden here...
+					// or should it be its own optional parameter?)
+					[
+						// Bundle-id is created here, since there are rules
+						// on how to bundle notifications of this type based
+						// on the page title, rather than all notifications
+						// of this type generally
+						"bundle-id" => $bundleString
+					]
+
+					
+				)
+
+				// Notification::create( [
+				// 	'type' => 'page-linked',
+				// 	'title' => $title,
+				// 	'agent' => $user,
+				// 	'extra' => [
+				// 		'target-page' => $linkFromPageId,
+				// 		'link-from-page-id' => $linkFromPageId,
+				// 		'revid' => $revid,
+				// 	],
+				// 	"presentation": [
+				// 		// Bundle-id is created here, since there are rules
+				// 		// on how to bundle notifications of this type based
+				// 		// on the page title, rather than all notifications
+				// 		// of this type generally
+				// 		"bundle-id" => $bundleString
+				// 	]
+				// ] );
 				$max--;
 			}
 			if ( $max < 0 ) {
