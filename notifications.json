@@ -56,5 +56,8 @@
                 }
             }
         }
+    },
+    "user-locators": {
+        "mention": "MediaWiki\\Extensions\\SampNotifExtension\\Locators::MentionLocator"
     }
 }
