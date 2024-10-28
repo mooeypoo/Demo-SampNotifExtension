@@ -50,7 +50,7 @@ class Hooks implements
 					// This used to be in the presentation model, but it should be
 					// used to know how to create the requested notification:
 					if ($title) {
-						if ( $this->event->getExtraParam( 'revid' ) ) {
+						if ( $revisionRecord->getId() ) {
 							$params = [
 								'oldid' => 'prev',
 								'diff' => $revisionRecord->getId()
