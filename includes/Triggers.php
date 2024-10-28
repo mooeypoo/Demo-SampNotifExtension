@@ -3,6 +3,11 @@
  * This file holds the triggers for the notifications this extension defines.
  * It would usually be named "Hooks" since it uses hooks to trigger the notifications,
  * but for the sake of this demo and clarity of operation, I'm calling it "Triggers".
+ * 
+ * Presentation model can be represented through the notification.json definition
+ * or through the 'create' call because all available prarametrs are available
+ * and are calculated when the notification is created.
+ * See https://www.mediawiki.org/wiki/Extension:Echo/Creating_a_new_notification_type#Creating_a_presentation_model
  */
 
 namespace MediaWiki\Extension\SampNotifExtension;
