@@ -83,7 +83,10 @@ class Hooks implements
 							'links' => [
 								[
 									'url' => $url,
-									'label' => $this->msg( 'notification-link-thank-you-edit', $this->getViewingUserForGender() )->text()
+									'label' => $this->msg(
+										'notification-link-thank-you-edit',
+										$this->getViewingUserForGender()
+									)->text()
 								]
 							]
 						]
@@ -137,8 +140,7 @@ class Hooks implements
 				'welcome',
 				null, // Page title
 				$user, // Agent
-				// "extra"
-				[],
+				[], // 'extra'
 				// Presentation:
 				[
 					'links' => [
