@@ -211,12 +211,32 @@ class Hooks implements
 
 				$muteLink = '' // <-- there's logic in the original file about creating this; all details are passed from this context.
 
+				$msg = parent::getHeaderMessage(); // <-- there's a difference here between bundle and non-bundle in the presentation model
+				$msg->params( $this->getTruncatedTitleText( $title, true ) );
+				$msg->params( $this->getTruncatedTitleText( $pageFrom, true ) );
+				// QUESTION: Okay; this is dynamic per view (it counts the number of notifications
+				// inside the bundle, to be able to mention it in the bundle 'header'. However,
+				// this is a general operation for all notifications that get bundled. We could
+				// have this done automatically (potentially adding a parameter for the notification
+				// count in all bundle-titles and have the messages always count it, whether they
+				// use it or not?))
+				// There's a case here about whether we should just ask for bundle notification
+				// title + params, and whatver wants to use the bundling feature (for now, only
+				// the web popup really) can do its own automatic checks to fill in that parameter
+				// on the fly?)
+				$count =
+					$this->getNotificationCountForOutput( true, [ $this, 'getLinkedPageId' ] );
+				$msg->numParams( $count );
+				$headerMessage = $msg;
+
 				Notification::create(
 					'page-linked',
 					$title,
 					$user,
 					// Presentation:
-					[],
+					[
+						// TODO: Figure out titles for bundle/non-bundled (see other comments above)
+					],
 					// links
 					[
 						// TODO: We need a separation  here for the delivery methods / UI
