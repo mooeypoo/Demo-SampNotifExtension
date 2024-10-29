@@ -58,6 +58,7 @@
             }
         },
         "page-linked": {
+            "icon": "linked",
             "context": "message",
             "priority": "medium",
             "user-locators": [ "article-creator" ],

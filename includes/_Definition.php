@@ -12,8 +12,11 @@ class Notifications {
         $eventType,
         $pageTitle,
         $agent,
-        $extra, // I don't think we need this anymore
+        // TODO: Some links are different between whether the notification is bundled
+        // or not; there could be some definition inside presentation to separate
+        // "bundled" and "regular" links (?)
         $presentation,
+        $links, // Primary link is the first in the array
         $bundle
     ) {
         /* ... */

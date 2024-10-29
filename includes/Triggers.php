@@ -65,11 +65,6 @@ class Hooks implements
 						'thank-you-edit', // Event type name
 						$title, // Page title
 						$userIdentity, // Agent
-						// 'extra':
-						[
-							'editCount' => $thresholdCount,
-							'revid' => $revisionRecord->getId(),
-						],
 						// 'presentation': 
 						// this overrides or augments event definition; 
 						// should it remain a key-value object or should we parameterize that somewhat too?
@@ -80,16 +75,19 @@ class Hooks implements
 								'msg' => 'notification-header-thank-you-' + $thresholdCount + '-edit',
 								'params' => [ $userIdentity ]
 							],
-							'links' => [
-								[
-									'url' => $url,
-									'label' => $this->msg(
-										'notification-link-thank-you-edit',
-										$this->getViewingUserForGender()
-									)->text()
-								]
+						],
+						// links
+						[
+							[
+								'url' => $url,
+								'label' => $this->msg(
+									'notification-link-thank-you-edit',
+									$this->getViewingUserForGender()
+								)->text()
 							]
 						]
+						// bundle
+						[]
 					)
 					// Notification::create( [
 					// 	'type' => 'thank-you-edit',
@@ -140,13 +138,10 @@ class Hooks implements
 				'welcome',
 				null, // Page title
 				$user, // Agent
-				[], // 'extra'
 				// Presentation:
-				[
-					'links' => [
-						$primaryLink
-					]
-				]
+				[],
+				// links
+				[ $primaryLink ]
 			)
 			// Notification::create( [
 			// 	'type' => 'welcome',
@@ -161,24 +156,12 @@ class Hooks implements
 	}
 
 	public function onLinksUpdateComplete( $linksUpdate, $ticket ) {
+		// [ ... logic to check: ...]
 		// Rollback or undo should not trigger link notification
-		if ( $linksUpdate->getRevisionRecord() ) {
-			$revId = $linksUpdate->getRevisionRecord()->getId();
-			if ( isset( self::$revertedRevIds[$revId] ) ) {
-				return;
-			}
-		}
-
 		// Handle only
 		// 1. content namespace pages &&
 		// 2. non-transcluding pages &&
 		// 3. non-redirect pages
-		if ( !$this->namespaceInfo->isContent( $linksUpdate->getTitle()->getNamespace() )
-			|| !$linksUpdate->isRecursive() || $linksUpdate->getTitle()->isRedirect()
-		) {
-			return;
-		}
-
 		$revRecord = $linksUpdate->getRevisionRecord();
 		$revid = $revRecord ? $revRecord->getId() : null;
 		$user = $revRecord ? $revRecord->getUser() : null;
@@ -204,33 +187,56 @@ class Hooks implements
 				}
 
 				$bundleString = $event->getType();
-				if ( $event->getTitle() ) {
-					$bundleString .= '-' . $event->getTitle()->getNamespace()
-						. '-' . $event->getTitle()->getDBkey();
+				if ( $title ) {
+					$bundleString .= '-' . $title->getNamespace()
+						. '-' . $title->getDBkey();
 				}
+
+				// This is 'canRender', but that, too, can just be here to check if
+				// a notifications hould be created
+				// See: https://github.com/wikimedia/mediawiki-extensions-Echo/blob/d322fde727aad84e79dfffa4a60e197a89e01a7d/includes/Formatters/EchoPageLinkedPresentationModel.php#L27
+				$pageFrom = Title::newFromID( $this->getLinkedPageId( $linkFromPageId ) );
+				if ((bool)$title && (bool)$pageFrom) {
+					continue;
+				}
+
+				$whatLinksHereLink = [
+					'url' => SpecialPage::getTitleFor( 'Whatlinkshere', $title->getPrefixedText() )
+						->getFullURL(),
+					'label' => $this->msg( 'notification-link-text-what-links-here' )->text(),
+					'description' => '',
+					'icon' => 'linked',
+					'prioritized' => true
+				];
+
+				$muteLink = '' // <-- there's logic in the original file about creating this; all details are passed from this context.
+
 				Notification::create(
 					'page-linked',
 					$title,
 					$user,
-					// "extra"
-					[
-						'target-page' => $linkFromPageId,
-						'link-from-page-id' => $linkFromPageId,
-						'revid' => $revid,
-					],
 					// Presentation:
-					// (Should bundle-id be in presentation, since it kinda relates to it,
-					// and technically is given in the event definition and can be overridden here...
-					// or should it be its own optional parameter?)
+					[],
+					// links
+					[
+						// TODO: We need a separation  here for the delivery methods / UI
+						// between what link (specifically the primary) renders for
+						// a regular notification vs. the one that appears
+						// for the notification if it's bundled
+						[
+							/* primary link (see TODO), */
+							$whatLinksHereLink,
+							$muteLink // TODO: Shouldn't this be a generic operation in the system?
+						],
+					],
+					// Bundle
 					[
 						// Bundle-id is created here, since there are rules
 						// on how to bundle notifications of this type based
 						// on the page title, rather than all notifications
 						// of this type generally
-						"bundle-id" => $bundleString
+						"bundle-id" => $bundleString,
 					]
-
-					
 				)
 
 				// Notification::create( [
